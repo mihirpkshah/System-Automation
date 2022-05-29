@@ -12,30 +12,33 @@ def start():
     loadIndices(["NIFTY"]) # updated indicesData
     stockFileNames = list(glob("./Bucket1/stocks/*.csv"))
     print("Total Stocks: ",len(stockFileNames))
-    i=0
-    with open("./Bucket2/subBucket2a.txt") as subBucket2a:
+    with open("./Bucket2/subBucket2a.txt", "a") as subBucket2a:
+        i=0
         for stockFilename in stockFileNames:
             try:
                 df = read_csv(stockFilename)
+                #print(df)
                 if doTechAnalysis_2a(df):
                     # TODO: add this stock to Bucket2/stocks
-                    subBucket2a.write(stockFilename.split["/"][-1])
+                    print("Adding", stockFilename.split("\\")[-1])
+                    subBucket2a.write(stockFilename.split("\\")[-1] + "\n")
                     i+=1
             except Exception as e: continue
     print("Total",i,"stocks added to subBucket2a")
-    
+    exit()
     with open("./Bucket2/subBucket2a.txt", "r") as subBucket2a:
         stocksToKeepIn2a = []
+        i=0
+        print("Total Stocks in subBucket2a", len(subBucket2a.readlines()))
         for stockName in subBucket2a.readlines():
-            stockFilename = "./Bucket1/stocks" + stockName
+            stockFilename = "./Bucket1/stocks/" + stockName
             try:
                 df = read_csv(stockFilename)
                 if doTechAnalysis_2b(df):
-                    stocksToKeepIn2a.append(stockFilename.split["/"][-1])
-                    # TODO: add this stock to Bucket2/stocks
+                    stocksToKeepIn2a.append(stockFilename.split("\\")[-1])
                     i+=1
             except Exception as e: continue
-    print("Total",i,"stocks added to subBucket2b")
+    print("Total",i,"stocks added to subBucket2a")
 
 def read_csv(stockFilename: str):
     df = pd.read_csv(stockFilename, skiprows=1, dtype={"Open": float64, "High": float64, "Low": float64, "Close": float64, "Traded Qty": float64, "Delivery Qty": float64})
@@ -47,6 +50,7 @@ def read_csv(stockFilename: str):
     return df
 
 def doTechAnalysis_2b(df: pd.DataFrame):
+    #TODO:
     return
 
 # THIS CODE WILL BE UPDATED BY ROHAN
